@@ -1,17 +1,39 @@
 var math_sentence = "";
 var current_num = "";
 
-//assigns the value of the clicked number button to the paragraph text on the "screen"
+//click function for number buttons
 $(".num_button").click(function(eventData) {
 	var value = $(eventData.target).attr("value");
-	current_num += value;
-	$("#screen").text(current_num);
 
-	math_sentence += value;
-	$("#history_screen").text(math_sentence);
-	console.log(math_sentence);
-
+	if (value == ".") {
+		decimal_check(value); 
+	} else {
+		display_value(value);
+	}
 })
+
+//checks if last character of current number is "."
+//	if yes, it does nothing
+//	if no, it jumps to function display_value
+function decimal_check(value) {
+	if (current_num.indexOf(".") == -1) {
+		display_value(value);
+	} 
+}
+
+//assigns the value of the clicked number button to the paragraph text on the "screen"
+function display_value(value) {
+	current_num += value;
+		$("#screen").text(current_num);
+
+		math_sentence += value;
+		$("#history_screen").text(math_sentence);
+		console.log(math_sentence);
+}
+
+
+
+
 
 
 //adds the operator to the math problem (the "sentence")
