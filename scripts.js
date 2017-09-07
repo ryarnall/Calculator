@@ -5,15 +5,21 @@ var result = "";
 //click function for number buttons
 function numButtonHandler(eventData) {
 	var value = $(eventData.target).attr("value");
-
 	if (value == ".") {
 		decimal_check(value); 
+	} else if (value == "0") {
+		zeroCheck(value);
 	} else {
 		display_value(value);
 	}
 }
 
-$(".num_button").click(numButtonHandler);
+//does not display zero if it would be the first digit of the current number
+function zeroCheck(value) {
+	if (current_num != "") {
+		display_value(value);
+	}
+}
 
 
 //checks if last character of current number is "."
@@ -27,6 +33,7 @@ function decimal_check(value) {
 }
 
 //assigns the value of the clicked number button to the paragraph text on the "screen"
+//	adds number to math sentence/equation
 function display_value(value) {
 	if (result != "") {
 		result = "";
@@ -35,14 +42,13 @@ function display_value(value) {
 	}
 	current_num += value;
 	$("#screen").text(current_num);
-
 	math_sentence += value;
 	$("#history_screen").text(math_sentence);
 	console.log(math_sentence);
 }
 
 //if = has not already been hit, it evals the equation and displays the result
-	//otherwise, hitting the = button does nothing
+//	otherwise, hitting the = button does nothing
 function hitEquals(operator) {
 	if (math_sentence.slice(-1) != "=") {
 			result = eval(math_sentence);
@@ -50,21 +56,36 @@ function hitEquals(operator) {
 			console.log(result);
 			math_sentence += operator;
 			$("#history_screen").text(math_sentence);
-			current_num = result;
+			current_num = result.toString();
+
+			// console.log("result is", result);
+			// console.log("result type is", typeof(result));
+			// console.log("current_num is", current_num);
+			// console.log("current_num is", typeof(current_num));
 	}
 }
 
+//adds the operator to the math problem (the "sentence")
 function hitOperator(operator) {
 	if (result != "") {
-			math_sentence = current_num;
-		}
+			math_sentence = current_num.toString();
+	}
+
+	//if the last character in the math equation/sentence is already an operator, 
+	//	this statement removes that operator before displaying the clicked one
+	if (math_sentence.slice(-1) == "+" || math_sentence.slice(-1) == "-"
+		|| math_sentence.slice(-1) == "*" || math_sentence.slice(-1) == "/") {
+		math_sentence = math_sentence.slice(0,-1);
+		console.log(math_sentence);
+	}
+
 	math_sentence += operator;
 	$("#history_screen").text(math_sentence);
 	current_num = "";
 	result = "";
 }
-//adds the operator to the math problem (the "sentence")
 
+// runs the appropriate function when =, +, -, *, or / is clicked
 $(".op_button").click(function(eventData) {
 	var operator = $(eventData.target).attr("value");
 	if (operator == "=") {
@@ -74,8 +95,9 @@ $(".op_button").click(function(eventData) {
 	}	
 })
 
-// empties the math_sentence and current_num strings
-// clears the history_screen and the regular screen
+// click handler for the clear button
+// 		empties the math_sentence, result, and current_num strings
+// 		clears the history_screen and the regular screen
 $("#clear_button").click(function() {
 	math_sentence = "";
 	current_num = "";
@@ -85,7 +107,8 @@ $("#clear_button").click(function() {
 })
 
 
-//trying keypress functions
+//function for when a key is pressed
+//	calls the appropriate function based on what was pressed
 $(document).keydown(function(the_key) {
 	var value = "";
   console.log('this is the keycode', the_key.keyCode);
@@ -119,7 +142,7 @@ $(document).keydown(function(the_key) {
   	display_value(value);
   } else if (the_key.which == 45 || the_key.which == 96) {
   	value = 0
-  	display_value(value);
+  	zeroCheck(value);
   } else if (the_key.which == 110 || the_key.which == 190) {
   	value = ".";
   	decimal_check(value);
@@ -139,6 +162,8 @@ $(document).keydown(function(the_key) {
   	value = "="
   	hitEquals(value);
   }
-
   
 });
+
+// initiates the click handler for number buttons
+$(".num_button").click(numButtonHandler);

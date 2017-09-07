@@ -17,19 +17,7 @@ body {
 	margin: auto;
 }
 
-.num_button {
-	width: 75px;
-	height: 40px;
-	font-size: 20px;
-}
-
-.op_button {
-	width: 75px;
-	height: 40px;
-	font-size: 20px;
-}
-
-#clear_button {
+button {
 	width: 75px;
 	height: 40px;
 	font-size: 20px;
