@@ -41,40 +41,36 @@ function display_value(value) {
 	console.log(math_sentence);
 }
 
-
-//adds the operator to the math problem (the "sentence")
-//once "=" button is clicked, it evals the sentence and returns the answer
-$(".op_button").click(function(eventData) {
-	var operator = $(eventData.target).attr("value");
-
-	if ($(eventData.target).attr("value") == "=") {
-
-		//if = has not already been hit, it evals the equation and displays the result
-		//otherwise, hitting the = button does nothing
-		if (math_sentence.slice(-1) != "=") {
+//if = has not already been hit, it evals the equation and displays the result
+	//otherwise, hitting the = button does nothing
+function hitEquals(operator) {
+	if (math_sentence.slice(-1) != "=") {
 			result = eval(math_sentence);
 			$("#screen").text(result);
 			console.log(result);
-
 			math_sentence += operator;
 			$("#history_screen").text(math_sentence);
-
 			current_num = result;
-		}
+	}
+}
 
-	} else {
-		if (result != "") {
+function hitOperator(operator) {
+	if (result != "") {
 			math_sentence = current_num;
 		}
-		// if (math_sentence.slice(-1) == "+" || math_sentence.slice(-1) == "-" ||
-		// 	math_sentence.slice(-1) == "*" || math_sentence.slice(-1) == "/") {
-		// 	//code here =P
-		// }
+	math_sentence += operator;
+	$("#history_screen").text(math_sentence);
+	current_num = "";
+	result = "";
+}
+//adds the operator to the math problem (the "sentence")
 
-		math_sentence += operator;
-		$("#history_screen").text(math_sentence);
-		current_num = "";
-		result = "";
+$(".op_button").click(function(eventData) {
+	var operator = $(eventData.target).attr("value");
+	if (operator == "=") {
+		hitEquals(operator);
+	} else {
+		hitOperator(operator);
 	}	
 })
 
@@ -127,6 +123,21 @@ $(document).keydown(function(the_key) {
   } else if (the_key.which == 110 || the_key.which == 190) {
   	value = ".";
   	decimal_check(value);
+  } else if (the_key.which == 107) {
+  	value = "+";
+  	hitOperator(value);
+  } else if (the_key.which == 109) {
+  	value = "-";
+  	hitOperator(value);
+  } else if (the_key.which == 106) {
+  	value = "*";
+  	hitOperator(value);
+  } else if (the_key.which == 111) {
+  	value = "/";
+  	hitOperator(value);
+  } else if (the_key.which == 12 || the_key.which == 13) {
+  	value = "="
+  	hitEquals(value);
   }
 
   
